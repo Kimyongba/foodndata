@@ -1,0 +1,473 @@
+<style>
+.fnav{display:flex;align-items:center;justify-content:space-between;background:#1E3A5F;padding:10px 20px;font-family:system-ui,-apple-system,sans-serif;position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:8px}
+.fnav a{color:#fff;text-decoration:none}
+.fnav-home{font-size:14px;font-weight:600;opacity:.95}
+.fnav-home:hover{opacity:1}
+.fnav-links{display:flex;gap:20px;flex-wrap:wrap}
+.fnav-links a{font-size:12px;opacity:.65}
+.fnav-links a:hover{opacity:1}
+.fnav-links a.active{font-weight:700;opacity:1}
+</style>
+<nav class="fnav">
+  <a class="fnav-home" href="index.html">&#8592; FoodNData</a>
+  <div class="fnav-links">
+    <a href="checklist.html">라벨 체크리스트</a>
+    <a href="nf-checker.html" class="active">NF 검증기</a>
+    <a href="calorie-calc.html">칼로리 검증기</a>
+  </div>
+</nav>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.w{padding:.75rem 0;font-family:var(--font-sans);max-width:900px}
+h2{font-size:17px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.sub{font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem}
+
+/* mode toggle */
+.mode-row{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap}
+.mode-label{font-size:12px;color:var(--color-text-secondary)}
+.mode-btn{font-size:12px;padding:6px 16px;border-radius:99px;cursor:pointer;border:1.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);transition:all .15s}
+.mode-btn.active{background:#1E3A5F;color:#fff;border-color:#1E3A5F}
+.mode-badge{font-size:11px;padding:3px 9px;border-radius:99px;margin-left:4px}
+.nf-badge{background:#DBEAFE;color:#1E40AF}
+.sf-badge{background:#EDE9FE;color:#5B21B6}
+
+/* summary */
+.sbar{display:flex;align-items:center;gap:8px;padding:9px 13px;border-radius:var(--border-radius-md);border:.5px solid var(--color-border-tertiary);margin-bottom:1rem;font-size:13px;transition:all .2s}
+.sbar.ok{background:#F0FDF4;border-color:#86EFAC;color:#15803D}
+.sbar.err{background:#FFF1F2;border-color:#FCA5A5;color:#B91C1C}
+.sbar.warn{background:#FFFBEB;border-color:#FCD34D;color:#92400E}
+.sbar.idle{color:var(--color-text-secondary)}
+
+/* table */
+.tbl{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:.75rem}
+.tbl th{font-size:10px;font-weight:500;color:var(--color-text-secondary);padding:5px 8px;background:var(--color-background-secondary);border:.5px solid var(--color-border-tertiary);text-align:left}
+.tbl th.c{text-align:center}
+.tbl td{padding:4px 7px;border:.5px solid var(--color-border-tertiary);vertical-align:middle;background:var(--color-background-primary)}
+.tbl tr.sec-hdr td{background:#1E3A5F;color:#fff;font-size:10px;font-weight:500;padding:4px 8px;letter-spacing:.04em}
+.tbl tr.sec-hdr.sf td{background:#4C1D95}
+.tbl tr.sub1 td:first-child{padding-left:20px;color:var(--color-text-secondary)}
+.tbl tr.sub2 td:first-child{padding-left:34px;color:var(--color-text-tertiary)}
+.tbl tr.opt td{opacity:.7}
+.tbl tr:hover td{background:var(--color-background-secondary)}
+.tbl tr.sec-hdr:hover td,.tbl tr.sec-hdr.sf:hover td{background:inherit}
+
+.ni{width:72px;text-align:right;padding:3px 6px;font-size:12px;border:.5px solid #2563EB;border-radius:5px;background:var(--color-background-secondary);color:var(--color-text-primary);outline:none}
+.ni:focus{background:var(--color-background-primary)}
+.ni:disabled{opacity:.4;border-color:var(--color-border-tertiary);cursor:not-allowed}
+.unit{font-size:11px;color:var(--color-text-tertiary)}
+.badge{display:inline-flex;align-items:center;font-size:10px;padding:2px 7px;border-radius:99px;font-weight:500;white-space:nowrap}
+.ok{background:#DCFCE7;color:#15803D}
+.warn{background:#FEF3C7;color:#92400E}
+.err{background:#FEE2E2;color:#B91C1C}
+.na{background:var(--color-background-secondary);color:var(--color-text-tertiary)}
+.mand{font-size:9px;padding:1px 5px;background:#DBEAFE;color:#1E40AF;border-radius:99px;margin-left:3px}
+.mand.s{background:#EDE9FE;color:#5B21B6}
+.opt-tag{font-size:9px;padding:1px 5px;background:var(--color-background-secondary);color:var(--color-text-tertiary);border-radius:99px;margin-left:3px}
+
+/* calc cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:8px;margin-bottom:1rem}
+.card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;border:.5px solid var(--color-border-tertiary)}
+.card-l{font-size:11px;color:var(--color-text-secondary);margin-bottom:3px}
+.card-v{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+.card-s{font-size:10px;color:var(--color-text-tertiary);margin-top:2px}
+.card.c-ok{border-color:#86EFAC;background:#F0FDF4}.card.c-ok .card-v{color:#15803D}
+.card.c-err{border-color:#FCA5A5;background:#FFF1F2}.card.c-err .card-v{color:#B91C1C}
+.card.c-warn{border-color:#FCD34D;background:#FFFBEB}.card.c-warn .card-v{color:#92400E}
+
+/* rounding ref */
+.rnd-tbl{width:100%;border-collapse:collapse;font-size:11px;margin-top:.5rem}
+.rnd-tbl th{background:var(--color-background-secondary);padding:4px 8px;text-align:left;border:.5px solid var(--color-border-tertiary);font-size:10px;font-weight:500;color:var(--color-text-secondary)}
+.rnd-tbl td{padding:4px 8px;border:.5px solid var(--color-border-tertiary);color:var(--color-text-primary)}
+.rnd-tbl tr:nth-child(even) td{background:var(--color-background-secondary)}
+
+.sec-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin:1rem 0 6px}
+.dvpct{width:55px;text-align:right;padding:3px 6px;font-size:11px;border:.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-background-secondary);color:var(--color-text-primary);outline:none}
+.dvpct:focus{background:var(--color-background-primary)}
+</style>
+
+<div class="w">
+<h2>Nutrition Facts / Supplement Facts 완전 검증기</h2>
+<p class="sub">21 CFR 101.9 (일반식품) · 21 CFR 101.36 (Dietary Supplement) 기반 · 파란 테두리 셀에 입력</p>
+
+<div class="mode-row">
+  <span class="mode-label">제품 유형:</span>
+  <button class="mode-btn active" id="btn-nf" onclick="setMode('nf')">일반식품 <span class="mode-badge nf-badge">Nutrition Facts</span></button>
+  <button class="mode-btn" id="btn-sf" onclick="setMode('sf')">Dietary Supplement <span class="mode-badge sf-badge">Supplement Facts</span></button>
+  <span id="mode-hint" style="font-size:11px;color:var(--color-text-tertiary)">필수 항목 자동 전환됩니다</span>
+</div>
+
+<div class="sbar idle" id="sbar"><span id="sbar-icon">—</span>&nbsp;<span id="sbar-txt">수치를 입력하면 검증 결과가 표시됩니다</span></div>
+
+<table class="tbl" id="main-tbl">
+  <thead>
+    <tr>
+      <th style="width:26%">항목</th>
+      <th class="c" style="width:10%">입력값</th>
+      <th style="width:5%">단위</th>
+      <th class="c" style="width:18%">반올림 규정 <span style="font-weight:400">(21 CFR)</span></th>
+      <th class="c" style="width:10%">검증</th>
+      <th class="c" style="width:8%">%DV 입력</th>
+      <th class="c" style="width:10%">계산 %DV</th>
+      <th class="c" style="width:13%">%DV 검증</th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+
+<div class="cards" id="cards">
+  <div class="card" id="c-cal"><div class="card-l">계산 Calories (Atwater)</div><div class="card-v" id="cv-cal">—</div><div class="card-s">지방×9 + 단백질×4 + 탄수화물×4</div></div>
+  <div class="card" id="c-diff"><div class="card-l">라벨 vs 계산 차이</div><div class="card-v" id="cv-diff">—</div><div class="card-s">±10kcal 이내 권장</div></div>
+  <div class="card" id="c-carb"><div class="card-l">탄수화물 세부 합계</div><div class="card-v" id="cv-carb">—</div><div class="card-s">Fiber + Total Sugars ≤ Total Carb</div></div>
+  <div class="card" id="c-sug"><div class="card-l">Added ≤ Total Sugars</div><div class="card-v" id="cv-sug">—</div><div class="card-s">Added Sugars는 Total 이하여야 함</div></div>
+</div>
+
+<div class="sec-title">반올림 규정 빠른 참조표 (21 CFR 101.9(c))</div>
+<table class="rnd-tbl">
+<thead><tr><th>항목</th><th>0으로 표기 기준</th><th>소단위 반올림</th><th>대단위 반올림</th><th>단위</th></tr></thead>
+<tbody>
+<tr><td><b>Calories</b></td><td>&lt;5kcal → 0 또는 5로 표기</td><td>5~50kcal: 5 단위</td><td>&gt;50kcal: 10 단위</td><td>kcal</td></tr>
+<tr><td><b>Total Fat</b></td><td>&lt;0.5g → 0</td><td>0.5~5g: 0.5g 단위</td><td>&gt;5g: 1g 단위</td><td>g</td></tr>
+<tr><td><b>Saturated Fat</b></td><td>&lt;0.5g → 0</td><td>0.5~5g: 0.5g 단위</td><td>&gt;5g: 1g 단위</td><td>g</td></tr>
+<tr><td><b>Trans Fat</b></td><td>&lt;0.5g → 0</td><td>≥0.5g: 0.5g 단위</td><td>—</td><td>g</td></tr>
+<tr><td><b>Polyunsat. / Monounsat. Fat</b></td><td>&lt;0.5g → 0</td><td>0.5~5g: 0.5g 단위</td><td>&gt;5g: 1g 단위</td><td>g</td></tr>
+<tr><td><b>Cholesterol</b></td><td>&lt;2mg → 0</td><td>2~5mg: "Less than 5mg"</td><td>&gt;5mg: 5mg 단위</td><td>mg</td></tr>
+<tr><td><b>Sodium</b></td><td>&lt;5mg → 0</td><td>5~140mg: 5mg 단위</td><td>&gt;140mg: 10mg 단위</td><td>mg</td></tr>
+<tr><td><b>Total Carbohydrate</b></td><td>&lt;0.5g → 0</td><td>≥0.5g: 1g 단위</td><td>—</td><td>g</td></tr>
+<tr><td><b>Dietary Fiber / Total Sugars / Added Sugars</b></td><td>&lt;0.5g → 0</td><td>≥0.5g: 1g 단위</td><td>—</td><td>g</td></tr>
+<tr><td><b>Protein</b></td><td>&lt;0.5g → 0</td><td>≥0.5g: 1g 단위</td><td>—</td><td>g</td></tr>
+<tr><td><b>비타민·미네랄 (RDI &lt;25mg/mcg)</b></td><td>RDI 2% 미만 → 표기 불필요</td><td colspan="2">0.1mg/mcg 단위 (예: 철분, 아연, 비타민D 등)</td><td>mg / mcg</td></tr>
+<tr><td><b>비타민·미네랄 (RDI 25~250mg/mcg)</b></td><td>RDI 2% 미만</td><td colspan="2">1mg/mcg 단위 (예: 비타민C, K, 아이오딘 등)</td><td>mg / mcg</td></tr>
+<tr><td><b>비타민·미네랄 (RDI ≥250mg/mcg)</b></td><td>RDI 2% 미만</td><td colspan="2">10mg/mcg 단위 (예: 칼슘, 마그네슘, 인 등)</td><td>mg</td></tr>
+<tr><td><b>%DV (일반 영양소)</b></td><td colspan="3">가장 가까운 1% 단위 · 0% 미만이면 "&lt;1%"</td><td>%</td></tr>
+<tr><td><b>%DV (비타민·미네랄)</b></td><td colspan="3">≤10%: 2% 단위 · 10~50%: 5% 단위 · &gt;50%: 10% 단위</td><td>%</td></tr>
+</tbody>
+</table>
+
+<div style="font-size:10px;color:var(--color-text-tertiary);margin-top:.5rem">
+  * DV 기준(2020 성인): Vit A 900mcgRAE · Vit C 90mg · Vit D 20mcg · Vit E 15mg · Vit K 120mcg · Thiamin 1.2mg · Riboflavin 1.3mg · Niacin 16mg · B6 1.7mg · Folate 400mcgDFE · B12 2.4mcg · Biotin 30mcg · Pantothenic 5mg · Choline 550mg · Ca 1300mg · Fe 18mg · P 1250mg · I 150mcg · Mg 420mg · Zn 11mg · Se 55mcg · Cu 0.9mg · Mn 2.3mg · Cr 35mcg · Mo 45mcg · Na 2300mg · K 4700mg · Cl 2300mg · F 4mg
+</div>
+</div>
+
+<script>
+// ── DV reference 2020 ──────────────────────────────────────────────────────
+const DV={
+  total_fat:78,sat_fat:20,cholesterol:300,sodium:2300,
+  total_carb:275,fiber:28,added_sugars:50,protein:50,
+  vit_a:900,vit_c:90,vit_d:20,vit_e:15,vit_k:120,
+  thiamin:1.2,riboflavin:1.3,niacin:16,vit_b6:1.7,
+  folate:400,vit_b12:2.4,biotin:30,pantothenic:5,choline:550,
+  calcium:1300,iron:18,phosphorus:1250,iodine:150,magnesium:420,
+  zinc:11,selenium:55,copper:0.9,manganese:2.3,chromium:35,
+  molybdenum:45,chloride:2300,potassium:4700,fluoride:4
+};
+
+// rounding rule strings (for display)
+const RND_RULE={
+  calories:"<5→0 or 5 | 5-50→5단위 | >50→10단위",
+  fat_g:"<0.5→0 | 0.5~5→0.5단위 | >5→1단위",
+  fat_g_trans:"<0.5→0 | ≥0.5→0.5단위",
+  cholesterol:"<2→0 | 2~5→<5mg | >5→5단위",
+  sodium:"<5→0 | 5~140→5단위 | >140→10단위",
+  carb_g:"<0.5→0 | ≥0.5→1단위",
+  vit_hi:"≥250mg 항목 → 10단위",   // Ca, Mg, P, Na, K, Cl
+  vit_mid:"25~250mg/mcg → 1단위",   // Vit C, K, Iodine etc
+  vit_lo:"<25mg/mcg → 0.1단위",     // Fe, Zn, Vit D, B vits etc
+};
+
+// ── Row definitions ──────────────────────────────────────────────────────
+// [key, label, unit, dvKey, rndfn, indent, bold, nf_req, sf_req, rndDisplay]
+// rndfn: function name string
+const ROWS_NF=[
+  // mandatory macronutrients
+  {k:"calories",  l:"Calories",              u:"kcal",dv:null,       rnd:"cal",  in:0,b:1,nf:1,sf:1},
+  {k:"total_fat", l:"Total Fat",             u:"g",   dv:"total_fat",rnd:"fat",  in:0,b:1,nf:1,sf:1},
+  {k:"sat_fat",   l:"Saturated Fat",         u:"g",   dv:"sat_fat",  rnd:"fat",  in:1,b:0,nf:1,sf:1},
+  {k:"trans_fat", l:"Trans Fat",             u:"g",   dv:null,       rnd:"fat_t",in:1,b:0,nf:1,sf:1},
+  {k:"poly_fat",  l:"Polyunsaturated Fat",   u:"g",   dv:null,       rnd:"fat",  in:1,b:0,nf:0,sf:0},
+  {k:"mono_fat",  l:"Monounsaturated Fat",   u:"g",   dv:null,       rnd:"fat",  in:1,b:0,nf:0,sf:0},
+  {k:"cholesterol",l:"Cholesterol",          u:"mg",  dv:"cholesterol",rnd:"chol",in:0,b:1,nf:1,sf:1},
+  {k:"sodium",    l:"Sodium",                u:"mg",  dv:"sodium",   rnd:"sod",  in:0,b:1,nf:1,sf:1},
+  {k:"total_carb",l:"Total Carbohydrate",    u:"g",   dv:"total_carb",rnd:"carb", in:0,b:1,nf:1,sf:1},
+  {k:"fiber",     l:"Dietary Fiber",         u:"g",   dv:"fiber",    rnd:"carb", in:1,b:0,nf:1,sf:1},
+  {k:"sol_fiber", l:"Soluble Fiber",         u:"g",   dv:null,       rnd:"carb", in:2,b:0,nf:0,sf:0},
+  {k:"insol_fiber",l:"Insoluble Fiber",      u:"g",   dv:null,       rnd:"carb", in:2,b:0,nf:0,sf:0},
+  {k:"total_sugars",l:"Total Sugars",        u:"g",   dv:null,       rnd:"carb", in:1,b:0,nf:1,sf:1},
+  {k:"added_sugars",l:"Includes Added Sugars",u:"g",  dv:"added_sugars",rnd:"carb",in:2,b:0,nf:1,sf:1},
+  {k:"sugar_alc", l:"Sugar Alcohols",        u:"g",   dv:null,       rnd:"carb", in:1,b:0,nf:0,sf:0},
+  {k:"protein",   l:"Protein",               u:"g",   dv:"protein",  rnd:"carb", in:0,b:1,nf:1,sf:1},
+  // NF 필수 4종 + optional vitamins
+  {k:"__div1",    l:null,sec:"비타민 · 미네랄 (필수 4종 — 일반식품)",nf_sec:true},
+  {k:"vit_d",     l:"Vitamin D",             u:"mcg", dv:"vit_d",    rnd:"vlo",  in:0,b:0,nf:1,sf:1},
+  {k:"calcium",   l:"Calcium",               u:"mg",  dv:"calcium",  rnd:"vhi",  in:0,b:0,nf:1,sf:1},
+  {k:"iron",      l:"Iron",                  u:"mg",  dv:"iron",     rnd:"vlo",  in:0,b:0,nf:1,sf:1},
+  {k:"potassium", l:"Potassium",             u:"mg",  dv:"potassium",rnd:"vhi",  in:0,b:0,nf:1,sf:1},
+  // optional vitamins/minerals (ordered per 101.9(c)(8)(iv))
+  {k:"__div2",    l:null,sec:"선택 비타민 · 미네랄 (표기 시 순서 준수)"},
+  {k:"vit_a",     l:"Vitamin A",             u:"mcgRAE",dv:"vit_a",  rnd:"vhi",  in:0,b:0,nf:0,sf:0},
+  {k:"vit_c",     l:"Vitamin C",             u:"mg",  dv:"vit_c",    rnd:"vmid", in:0,b:0,nf:0,sf:0},
+  {k:"vit_e",     l:"Vitamin E",             u:"mg",  dv:"vit_e",    rnd:"vlo",  in:0,b:0,nf:0,sf:0},
+  {k:"vit_k",     l:"Vitamin K",             u:"mcg", dv:"vit_k",    rnd:"vmid", in:0,b:0,nf:0,sf:0},
+  {k:"thiamin",   l:"Thiamin (B1)",          u:"mg",  dv:"thiamin",  rnd:"vlo",  in:0,b:0,nf:0,sf:0},
+  {k:"riboflavin",l:"Riboflavin (B2)",       u:"mg",  dv:"riboflavin",rnd:"vlo", in:0,b:0,nf:0,sf:0},
+  {k:"niacin",    l:"Niacin (B3)",           u:"mg",  dv:"niacin",   rnd:"vlo",  in:0,b:0,nf:0,sf:0},
+  {k:"vit_b6",    l:"Vitamin B6",            u:"mg",  dv:"vit_b6",   rnd:"vlo",  in:0,b:0,nf:0,sf:0},
+  {k:"folate",    l:"Folate (mcgDFE)",       u:"mcg", dv:"folate",   rnd:"vhi",  in:0,b:0,nf:0,sf:0},
+  {k:"vit_b12",   l:"Vitamin B12",           u:"mcg", dv:"vit_b12",  rnd:"vlo",  in:0,b:0,nf:0,sf:0},
+  {k:"biotin",    l:"Biotin",                u:"mcg", dv:"biotin",   rnd:"vmid", in:0,b:0,nf:0,sf:0},
+  {k:"pantothenic",l:"Pantothenic Acid (B5)",u:"mg",  dv:"pantothenic",rnd:"vlo",in:0,b:0,nf:0,sf:0},
+  {k:"choline",   l:"Choline",               u:"mg",  dv:"choline",  rnd:"vhi",  in:0,b:0,nf:0,sf:0},
+  {k:"phosphorus",l:"Phosphorus",            u:"mg",  dv:"phosphorus",rnd:"vhi", in:0,b:0,nf:0,sf:0},
+  {k:"iodine",    l:"Iodine",                u:"mcg", dv:"iodine",   rnd:"vmid", in:0,b:0,nf:0,sf:0},
+  {k:"magnesium", l:"Magnesium",             u:"mg",  dv:"magnesium",rnd:"vhi",  in:0,b:0,nf:0,sf:0},
+  {k:"zinc",      l:"Zinc",                  u:"mg",  dv:"zinc",     rnd:"vlo",  in:0,b:0,nf:0,sf:0},
+  {k:"selenium",  l:"Selenium",              u:"mcg", dv:"selenium", rnd:"vmid", in:0,b:0,nf:0,sf:0},
+  {k:"copper",    l:"Copper",                u:"mg",  dv:"copper",   rnd:"vlo",  in:0,b:0,nf:0,sf:0},
+  {k:"manganese", l:"Manganese",             u:"mg",  dv:"manganese",rnd:"vlo",  in:0,b:0,nf:0,sf:0},
+  {k:"chromium",  l:"Chromium",              u:"mcg", dv:"chromium", rnd:"vmid", in:0,b:0,nf:0,sf:0},
+  {k:"molybdenum",l:"Molybdenum",            u:"mcg", dv:"molybdenum",rnd:"vmid",in:0,b:0,nf:0,sf:0},
+  {k:"chloride",  l:"Chloride",              u:"mg",  dv:"chloride", rnd:"vhi",  in:0,b:0,nf:0,sf:0},
+  {k:"fluoride",  l:"Fluoride",              u:"mg",  dv:"fluoride", rnd:"vlo",  in:0,b:0,nf:0,sf:0},
+];
+
+// SF mandatory in order (101.36): full vitamin list required
+// keys that are mandatory in SF
+const SF_MAND=new Set(["calories","total_fat","sat_fat","trans_fat","cholesterol","sodium",
+  "total_carb","fiber","total_sugars","added_sugars","protein",
+  "vit_a","vit_c","vit_d","vit_e","vit_k","thiamin","riboflavin","niacin","vit_b6",
+  "folate","vit_b12","biotin","pantothenic","choline","calcium","iron","phosphorus",
+  "iodine","magnesium","zinc","selenium","copper","manganese","chromium","molybdenum",
+  "chloride","potassium","fluoride"]);
+
+let mode="nf";
+const vals={};
+const dvI={};
+
+function roundCheck(val,rnd){
+  if(val===null||val===undefined) return null;
+  const v=parseFloat(val);
+  if(isNaN(v)) return null;
+  const eps=0.0001;
+  if(rnd==="cal"){
+    if(v<5) return true; // 0 or 5 both ok
+    if(v<=50) return Math.abs(v%5)<eps||Math.abs(v%5-5)<eps;
+    return Math.abs(v%10)<eps||Math.abs(v%10-10)<eps;
+  }
+  if(rnd==="fat"){
+    if(v<0.5) return true;
+    if(v<=5) return Math.abs(v*2%1)<eps||Math.abs(v*2%1-1)<eps;
+    return Math.abs(v%1)<eps||Math.abs(v%1-1)<eps;
+  }
+  if(rnd==="fat_t"){
+    if(v<0.5) return true;
+    return Math.abs(v*2%1)<eps||Math.abs(v*2%1-1)<eps;
+  }
+  if(rnd==="chol"){
+    if(v<2) return true;
+    return Math.abs(v%5)<eps||Math.abs(v%5-5)<eps;
+  }
+  if(rnd==="sod"){
+    if(v<5) return true;
+    if(v<=140) return Math.abs(v%5)<eps||Math.abs(v%5-5)<eps;
+    return Math.abs(v%10)<eps||Math.abs(v%10-10)<eps;
+  }
+  if(rnd==="carb"){
+    if(v<0.5) return true;
+    return Math.abs(v%1)<eps||Math.abs(v%1-1)<eps;
+  }
+  if(rnd==="vlo")  return Math.abs(v*10%1)<eps||Math.abs(v*10%1-1)<eps;
+  if(rnd==="vmid") return Math.abs(v%1)<eps||Math.abs(v%1-1)<eps;
+  if(rnd==="vhi")  return Math.abs(v%10)<eps||Math.abs(v%10-10)<eps;
+  return true;
+}
+
+function calcDV(val,dvKey,isVitMin){
+  if(!dvKey||!DV[dvKey]) return null;
+  const pct=(parseFloat(val)/DV[dvKey])*100;
+  if(isVitMin){
+    // tiered: ≤10→2% incr, 10-50→5%, >50→10%
+    if(pct<=10) return Math.round(pct/2)*2;
+    if(pct<=50) return Math.round(pct/5)*5;
+    return Math.round(pct/10)*10;
+  }
+  return Math.round(pct);
+}
+
+function isVitMin(rnd){return rnd==="vlo"||rnd==="vmid"||rnd==="vhi";}
+
+function rndRuleText(rnd){
+  if(rnd==="cal") return "<5: 0 또는 5 | 5-50: 5단위 | >50: 10단위";
+  if(rnd==="fat") return "<0.5: 0 | 0.5~5: 0.5단위 | >5: 1단위";
+  if(rnd==="fat_t") return "<0.5: 0 | ≥0.5: 0.5단위";
+  if(rnd==="chol") return "<2: 0 | 2~5: <5mg | >5: 5단위";
+  if(rnd==="sod") return "<5: 0 | 5~140: 5단위 | >140: 10단위";
+  if(rnd==="carb") return "<0.5: 0 | ≥0.5: 1단위";
+  if(rnd==="vlo") return "0.1단위 (RDI<25mg/mcg)";
+  if(rnd==="vmid") return "1단위 (RDI 25~250mg/mcg)";
+  if(rnd==="vhi") return "10단위 (RDI≥250mg/mcg)";
+  return "—";
+}
+
+function build(){
+  const tb=document.getElementById("tbody");
+  tb.innerHTML="";
+  ROWS_NF.forEach(row=>{
+    if(row.sec!==undefined){
+      const isSF=(row.sec||"").includes("일반식품")?false:false;
+      const secClass=mode==="sf"?"sec-hdr sf":"sec-hdr";
+      tb.innerHTML+=`<tr class="${secClass}"><td colspan="8">${row.sec}</td></tr>`;
+      return;
+    }
+    const isMandNF=!!row.nf;
+    const isMandSF=SF_MAND.has(row.k)&&row.k!=="__div1"&&row.k!=="__div2";
+    const isMand=(mode==="nf"?isMandNF:isMandSF);
+    const isOpt=!isMand;
+    const v=vals[row.k]!==undefined?vals[row.k]:"";
+    const dvi=dvI[row.k]!==undefined?dvI[row.k]:"";
+    const indClass=row.in===2?"sub2":row.in===1?"sub1":"";
+    const optClass=isOpt?"opt":"";
+    const fw=row.b?"font-weight:500;":"";
+    const mandTag=isMand?(mode==="sf"?`<span class="mand s">필수</span>`:`<span class="mand">필수</span>`):`<span class="opt-tag">선택</span>`;
+    // rounding validation
+    const rndOk=v!==""?roundCheck(v,row.rnd):null;
+    const rndBadge=v===""?`<span class="badge na">—</span>`:(rndOk?`<span class="badge ok">✓</span>`:`<span class="badge err">⚠ 확인</span>`);
+    // %DV calc
+    const hasDV=!!row.dv&&!!DV[row.dv];
+    const vm=isVitMin(row.rnd);
+    let dvCalc="—",dvBadge=`<span class="badge na">—</span>`;
+    if(hasDV&&v!==""){
+      const c=calcDV(v,row.dv,vm);
+      dvCalc=c+"%";
+      if(dvi!==""){
+        const di=parseInt(dvi);
+        const diff=Math.abs(di-c);
+        dvBadge=diff===0?`<span class="badge ok">✓ 일치</span>`:(diff<=2?`<span class="badge warn">△ ±${diff}%</span>`:`<span class="badge err">✗ ${diff}% 차이</span>`);
+      }
+    }
+    const dvInput=hasDV?`<input class="dvpct" id="dv-${row.k}" type="number" min="0" value="${dvi}" oninput="onDvI('${row.k}')" placeholder="%">`:`<span style="font-size:10px;color:var(--color-text-tertiary)">N/A</span>`;
+    const ruleText=rndRuleText(row.rnd);
+    tb.innerHTML+=`
+    <tr class="${indClass} ${optClass}" id="tr-${row.k}">
+      <td style="${fw}">${row.l} ${mandTag}</td>
+      <td style="text-align:center"><input class="ni" id="in-${row.k}" type="number" min="0" value="${v}" oninput="onI('${row.k}')" step="any"></td>
+      <td><span class="unit">${row.u}</span></td>
+      <td style="font-size:10px;color:var(--color-text-secondary)">${ruleText}</td>
+      <td style="text-align:center" id="rnd-${row.k}">${rndBadge}</td>
+      <td style="text-align:center">${dvInput}</td>
+      <td style="text-align:center;font-size:11px" id="dvc-${row.k}">${dvCalc}</td>
+      <td style="text-align:center" id="dvv-${row.k}">${dvBadge}</td>
+    </tr>`;
+  });
+}
+
+function onI(k){
+  const el=document.getElementById(`in-${k}`);
+  vals[k]=el.value;
+  updateRow(k);
+  updateCards();
+  updateSummary();
+}
+function onDvI(k){
+  const el=document.getElementById(`dv-${k}`);
+  dvI[k]=el.value;
+  updateRow(k);
+  updateSummary();
+}
+
+function updateRow(k){
+  const row=ROWS_NF.find(r=>r.k===k);
+  if(!row||row.sec!==undefined) return;
+  const v=vals[k]!==undefined?vals[k]:"";
+  const dvi=dvI[k]!==undefined?dvI[k]:"";
+  const rndEl=document.getElementById(`rnd-${k}`);
+  const dvcEl=document.getElementById(`dvc-${k}`);
+  const dvvEl=document.getElementById(`dvv-${k}`);
+  if(!rndEl) return;
+  const rndOk=v!==""?roundCheck(v,row.rnd):null;
+  rndEl.innerHTML=v===""?`<span class="badge na">—</span>`:(rndOk?`<span class="badge ok">✓ 정상</span>`:`<span class="badge err">⚠ 반올림</span>`);
+  const hasDV=!!row.dv&&!!DV[row.dv];
+  const vm=isVitMin(row.rnd);
+  if(hasDV&&v!==""){
+    const c=calcDV(v,row.dv,vm);
+    dvcEl.textContent=c+"%";
+    if(dvi!==""){
+      const di=parseInt(dvi);
+      const diff=Math.abs(di-c);
+      dvvEl.innerHTML=diff===0?`<span class="badge ok">✓ 일치</span>`:(diff<=2?`<span class="badge warn">△ ±${diff}%</span>`:`<span class="badge err">✗ ${diff}% 차이</span>`);
+    } else dvvEl.innerHTML=`<span class="badge na">—</span>`;
+  } else {dvcEl.textContent="—";dvvEl.innerHTML=`<span class="badge na">—</span>`;}
+}
+
+function g(k){const v=vals[k];return v!==""&&v!==undefined?parseFloat(v):null;}
+
+function updateCards(){
+  const fat=g("total_fat"),prot=g("protein"),carb=g("total_carb"),cal=g("calories");
+  const fiber=g("fiber"),tsug=g("total_sugars"),asug=g("added_sugars");
+  // cal card
+  const cc=document.getElementById("c-cal"),cv=document.getElementById("cv-cal");
+  if(fat!==null&&prot!==null&&carb!==null){
+    const calc=Math.round(fat*9+prot*4+carb*4);
+    cv.textContent=calc+" kcal"; cc.className="card c-ok";
+    const dc=document.getElementById("c-diff"),dv=document.getElementById("cv-diff");
+    if(cal!==null){
+      const d=Math.abs(cal-calc);
+      dv.textContent=(d===0?"±0":(cal>calc?"+":"-")+d)+" kcal";
+      dc.className=d<=10?"card c-ok":(d<=20?"card c-warn":"card c-err");
+    } else {dv.textContent="—";dc.className="card";}
+  } else {cv.textContent="—";cc.className="card";}
+  // carb card
+  const cbc=document.getElementById("c-carb"),cbv=document.getElementById("cv-carb");
+  if(fiber!==null&&tsug!==null&&carb!==null){
+    const sub=Math.round((fiber+tsug)*10)/10;
+    cbv.textContent=`${sub}g / ${carb}g`;
+    cbc.className=sub<=carb+0.05?"card c-ok":"card c-err";
+    cbv.style.fontSize="14px";
+  } else {cbv.textContent="—";cbc.className="card";cbv.style.fontSize="";}
+  // sugar card
+  const sc=document.getElementById("c-sug"),sv=document.getElementById("cv-sug");
+  if(asug!==null&&tsug!==null){
+    sv.textContent=asug<=tsug+0.01?"✓ 정상":"⚠ 오류";
+    sc.className=asug<=tsug+0.01?"card c-ok":"card c-err";
+  } else {sv.textContent="—";sc.className="card";}
+}
+
+function updateSummary(){
+  let errs=0,warns=0,hasAny=false;
+  ROWS_NF.forEach(row=>{
+    if(row.sec!==undefined) return;
+    const v=vals[row.k];
+    if(v===""||v===undefined) return;
+    hasAny=true;
+    if(!roundCheck(v,row.rnd)) errs++;
+    if(row.dv&&DV[row.dv]&&dvI[row.k]!==""){
+      const c=calcDV(v,row.dv,isVitMin(row.rnd));
+      const d=Math.abs(parseInt(dvI[row.k])-c);
+      if(d>2) errs++; else if(d>0) warns++;
+    }
+  });
+  // cross checks
+  const fat=g("total_fat"),prot=g("protein"),carb=g("total_carb"),cal=g("calories");
+  const fiber=g("fiber"),tsug=g("total_sugars"),asug=g("added_sugars");
+  if(fat!==null&&prot!==null&&carb!==null&&cal!==null){
+    const d=Math.abs(cal-(fat*9+prot*4+carb*4));
+    if(d>20) errs++; else if(d>10) warns++;
+  }
+  if(fiber!==null&&tsug!==null&&carb!==null&&(fiber+tsug)>carb+0.05) errs++;
+  if(asug!==null&&tsug!==null&&asug>tsug+0.01) errs++;
+  const bar=document.getElementById("sbar"),icon=document.getElementById("sbar-icon"),txt=document.getElementById("sbar-txt");
+  if(!hasAny){bar.className="sbar idle";icon.textContent="—";txt.textContent="수치를 입력하면 검증 결과가 표시됩니다";return;}
+  if(errs>0){bar.className="sbar err";icon.textContent="⚠";txt.textContent=`${errs}개 오류 발견 — 반올림 또는 %DV 수치 확인 필요`;}
+  else if(warns>0){bar.className="sbar warn";icon.textContent="△";txt.textContent=`${warns}개 경고 — 반올림 차이 있을 수 있음`;}
+  else{bar.className="sbar ok";icon.textContent="✓";txt.textContent="입력된 수치 모두 정상입니다";}
+}
+
+function setMode(m){
+  mode=m;
+  document.getElementById("btn-nf").className="mode-btn"+(m==="nf"?" active":"");
+  document.getElementById("btn-sf").className="mode-btn"+(m==="sf"?" active":"");
+  // Update section headers color
+  build();
+}
+
+build();
+</script>

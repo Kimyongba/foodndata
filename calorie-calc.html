@@ -1,0 +1,445 @@
+<style>
+.fnav{display:flex;align-items:center;justify-content:space-between;background:#1E3A5F;padding:10px 20px;font-family:system-ui,-apple-system,sans-serif;position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:8px}
+.fnav a{color:#fff;text-decoration:none}
+.fnav-home{font-size:14px;font-weight:600;opacity:.95}
+.fnav-home:hover{opacity:1}
+.fnav-links{display:flex;gap:20px;flex-wrap:wrap}
+.fnav-links a{font-size:12px;opacity:.65}
+.fnav-links a:hover{opacity:1}
+.fnav-links a.active{font-weight:700;opacity:1}
+</style>
+<nav class="fnav">
+  <a class="fnav-home" href="index.html">&#8592; FoodNData</a>
+  <div class="fnav-links">
+    <a href="checklist.html">라벨 체크리스트</a>
+    <a href="nf-checker.html">NF 검증기</a>
+    <a href="calorie-calc.html" class="active">칼로리 검증기</a>
+  </div>
+</nav>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.w{padding:.75rem 0;font-family:var(--font-sans);max-width:820px}
+h2{font-size:17px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.sub{font-size:12px;color:var(--color-text-secondary);margin-bottom:1.25rem}
+
+/* input grid */
+.input-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:1.25rem}
+.input-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px;border:.5px solid var(--color-border-tertiary)}
+.input-card-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.input-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.input-row:last-child{margin-bottom:0}
+.input-label{font-size:13px;color:var(--color-text-primary)}
+.input-label.sub{font-size:12px;color:var(--color-text-secondary);padding-left:10px}
+.input-right{display:flex;align-items:center;gap:5px}
+.ni{width:72px;text-align:right;padding:4px 7px;font-size:13px;border:1.5px solid #2563EB;border-radius:6px;background:var(--color-background-primary);color:var(--color-text-primary);outline:none}
+.ni:focus{border-color:#1d4ed8}
+.unit-lbl{font-size:11px;color:var(--color-text-tertiary);width:26px}
+.factor-lbl{font-size:11px;color:#2563EB;font-weight:500;min-width:52px;text-align:right}
+
+/* select */
+.sa-select{font-size:12px;padding:3px 6px;border:.5px solid var(--color-border-secondary);border-radius:6px;background:var(--color-background-primary);color:var(--color-text-primary);outline:none;max-width:160px}
+
+/* result panel */
+.result-panel{border-radius:var(--border-radius-lg);border:.5px solid var(--color-border-tertiary);overflow:hidden;margin-bottom:1.25rem}
+.result-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--color-background-secondary);border-bottom:.5px solid var(--color-border-tertiary)}
+.result-title{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.verdict{font-size:13px;font-weight:500;padding:4px 12px;border-radius:99px}
+.v-ok{background:#DCFCE7;color:#15803D}
+.v-warn{background:#FEF3C7;color:#92400E}
+.v-err{background:#FEE2E2;color:#B91C1C}
+.v-na{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+
+/* breakdown table */
+.btbl{width:100%;border-collapse:collapse;font-size:13px}
+.btbl td{padding:9px 16px;border-bottom:.5px solid var(--color-border-tertiary)}
+.btbl tr:last-child td{border-bottom:none}
+.btbl .item-name{color:var(--color-text-primary)}
+.btbl .item-sub{font-size:11px;color:var(--color-text-secondary);display:block;margin-top:1px}
+.btbl .val-col{text-align:right;font-size:12px;color:var(--color-text-secondary)}
+.btbl .factor-col{text-align:center;font-size:12px;color:var(--color-text-secondary);width:90px}
+.btbl .kcal-col{text-align:right;font-size:13px;font-weight:500;color:var(--color-text-primary);width:80px}
+.btbl .eq-col{text-align:center;font-size:12px;color:var(--color-text-tertiary);width:20px}
+.btbl tr.total-row td{background:var(--color-background-secondary);font-weight:500}
+.btbl tr.total-row .kcal-col{font-size:15px;color:var(--color-text-primary)}
+.btbl tr.divider td{background:var(--color-background-secondary);font-size:10px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;padding:5px 16px}
+.btbl tr.disabled-row td{opacity:.4}
+.btbl .note-chip{font-size:10px;padding:1px 6px;border-radius:99px;margin-left:6px;vertical-align:middle}
+.nc-blue{background:#DBEAFE;color:#1E40AF}
+.nc-amber{background:#FEF3C7;color:#92400E}
+.nc-green{background:#DCFCE7;color:#15803D}
+
+/* compare section */
+.compare-row{display:flex;align-items:center;gap:16px;padding:12px 16px;flex-wrap:wrap}
+.compare-item{display:flex;align-items:center;gap:8px}
+.compare-label{font-size:12px;color:var(--color-text-secondary)}
+.compare-val{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+.compare-sep{font-size:18px;color:var(--color-text-tertiary)}
+.diff-badge{font-size:13px;padding:4px 12px;border-radius:99px;font-weight:500}
+.diff-ok{background:#DCFCE7;color:#15803D}
+.diff-warn{background:#FEF3C7;color:#92400E}
+.diff-err{background:#FEE2E2;color:#B91C1C}
+.diff-na{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+
+/* ref table */
+.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:.75rem}
+.ref-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;border:.5px solid var(--color-border-tertiary)}
+.ref-card-title{font-size:10px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.ref-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:3px 0;border-bottom:.5px solid var(--color-border-tertiary)}
+.ref-row:last-child{border-bottom:none}
+.ref-name{color:var(--color-text-primary)}
+.ref-val{font-weight:500;color:#2563EB}
+.ref-note{font-size:10px;color:var(--color-text-tertiary)}
+.sec-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin:.75rem 0 6px}
+</style>
+
+<div class="w">
+<h2>칼로리 계산 근거 검증기</h2>
+<p class="sub">FDA 21 CFR 101.9(c)(1) 기반 · 라벨 수치 입력 → 성분별 칼로리 계산 근거 자동 표시</p>
+
+<!-- ── INPUT SECTION ─────────────────────────────────────────────────── -->
+<div class="input-grid">
+
+  <!-- 매크로 -->
+  <div class="input-card">
+    <div class="input-card-title">매크로영양소</div>
+    <div class="input-row">
+      <span class="input-label">Total Fat</span>
+      <div class="input-right">
+        <input class="ni" id="v-fat" type="number" min="0" step="0.5" value="" oninput="calc()" placeholder="0">
+        <span class="unit-lbl">g</span>
+        <span class="factor-lbl">× 9</span>
+      </div>
+    </div>
+    <div class="input-row">
+      <span class="input-label">Protein</span>
+      <div class="input-right">
+        <input class="ni" id="v-prot" type="number" min="0" step="1" value="" oninput="calc()" placeholder="0">
+        <span class="unit-lbl">g</span>
+        <span class="factor-lbl">× 4</span>
+      </div>
+    </div>
+    <div class="input-row">
+      <span class="input-label">Total Carbohydrate</span>
+      <div class="input-right">
+        <input class="ni" id="v-carb" type="number" min="0" step="1" value="" oninput="calc()" placeholder="0">
+        <span class="unit-lbl">g</span>
+        <span class="factor-lbl">× 4</span>
+      </div>
+    </div>
+    <div class="input-row" style="margin-top:4px;padding-top:6px;border-top:.5px dashed var(--color-border-tertiary)">
+      <span class="input-label" style="font-size:12px;color:var(--color-text-secondary)">라벨 표기 Calories</span>
+      <div class="input-right">
+        <input class="ni" id="v-label-cal" type="number" min="0" step="5" value="" oninput="calc()" placeholder="0">
+        <span class="unit-lbl" style="width:34px">kcal</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 식이섬유 -->
+  <div class="input-card">
+    <div class="input-card-title">식이섬유 (Dietary Fiber)</div>
+    <div class="input-row">
+      <span class="input-label">Dietary Fiber 함량</span>
+      <div class="input-right">
+        <input class="ni" id="v-fiber" type="number" min="0" step="1" value="" oninput="calc()" placeholder="0">
+        <span class="unit-lbl">g</span>
+      </div>
+    </div>
+    <div class="input-row" style="margin-top:6px">
+      <span class="input-label" style="font-size:12px">섬유 종류 선택</span>
+    </div>
+    <div class="input-row">
+      <select class="sa-select" style="max-width:100%;width:100%" id="fiber-type" onchange="calc()">
+        <option value="4">총 탄수화물에 포함 (4 kcal/g — 기본 Atwater)</option>
+        <option value="2">수용성 섬유 Soluble fiber (2 kcal/g)</option>
+        <option value="0">불용성 섬유 Insoluble fiber (0 kcal/g)</option>
+        <option value="1.5">일부 수용성 혼합 (1.5 kcal/g)</option>
+      </select>
+    </div>
+    <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:6px;line-height:1.5">
+      ※ 기본값: 탄수화물 계산에 포함 (4 kcal/g)<br>
+      수용성 점성 섬유 일부는 FDA가 2 kcal/g 인정<br>
+      불용성 섬유는 에너지 기여 없음 (0 kcal/g)
+    </div>
+  </div>
+
+  <!-- 당알콜 -->
+  <div class="input-card">
+    <div class="input-card-title">당알콜 (Sugar Alcohols)</div>
+    <div class="input-row">
+      <span class="input-label">Sugar Alcohols 함량</span>
+      <div class="input-right">
+        <input class="ni" id="v-sa" type="number" min="0" step="0.5" value="" oninput="calc()" placeholder="0">
+        <span class="unit-lbl">g</span>
+      </div>
+    </div>
+    <div class="input-row" style="margin-top:6px">
+      <span class="input-label" style="font-size:12px">당알콜 종류</span>
+    </div>
+    <div class="input-row">
+      <select class="sa-select" style="max-width:100%;width:100%" id="sa-type" onchange="calc()">
+        <option value="4">미지정 — 탄수화물에 포함 (4 kcal/g)</option>
+        <option value="2.6">Sorbitol 솔비톨 (2.6 kcal/g)</option>
+        <option value="2.4">Xylitol 자일리톨 (2.4 kcal/g)</option>
+        <option value="2.1">Maltitol 말티톨 (2.1 kcal/g)</option>
+        <option value="2.0">Isomalt 이소말트 (2.0 kcal/g)</option>
+        <option value="2.0">Lactitol 락티톨 (2.0 kcal/g)</option>
+        <option value="1.6">Mannitol 만니톨 (1.6 kcal/g)</option>
+        <option value="3.0">HSH 수소화전분가수분해물 (3.0 kcal/g)</option>
+        <option value="0">Erythritol 에리스리톨 (0 kcal/g)</option>
+      </select>
+    </div>
+    <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:6px;line-height:1.5">
+      ※ 21 CFR 101.9(c)(1)(i)(F) 기준<br>
+      종류 미지정 시: 탄수화물과 동일하게 4 kcal/g 적용
+    </div>
+  </div>
+
+  <!-- 알코올 (선택) -->
+  <div class="input-card">
+    <div class="input-card-title">알코올 (선택사항)</div>
+    <div class="input-row">
+      <span class="input-label">Alcohol 함량</span>
+      <div class="input-right">
+        <input class="ni" id="v-alc" type="number" min="0" step="0.5" value="" oninput="calc()" placeholder="0">
+        <span class="unit-lbl">g</span>
+        <span class="factor-lbl">× 7</span>
+      </div>
+    </div>
+    <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:8px;line-height:1.6">
+      ※ 에탄올 함유 식품에 적용 (7 kcal/g)<br>
+      일반 식품·건강기능식품은 해당 없음
+    </div>
+  </div>
+</div>
+
+<!-- ── RESULT PANEL ─────────────────────────────────────────────────── -->
+<div class="result-panel">
+  <div class="result-header">
+    <span class="result-title">칼로리 계산 근거</span>
+    <span class="verdict v-na" id="verdict">수치 입력 대기</span>
+  </div>
+
+  <!-- compare row -->
+  <div class="compare-row" style="background:var(--color-background-secondary);border-bottom:.5px solid var(--color-border-tertiary)">
+    <div class="compare-item">
+      <span class="compare-label">라벨 표기</span>
+      <span class="compare-val" id="lbl-cal">—</span>
+      <span class="unit-lbl" style="font-size:12px">kcal</span>
+    </div>
+    <span class="compare-sep">vs</span>
+    <div class="compare-item">
+      <span class="compare-label">계산값</span>
+      <span class="compare-val" id="calc-cal" style="color:#2563EB">—</span>
+      <span class="unit-lbl" style="font-size:12px">kcal</span>
+    </div>
+    <div id="diff-badge" class="diff-badge diff-na">—</div>
+    <div style="font-size:11px;color:var(--color-text-tertiary)">※ FDA 허용 오차: ±20%</div>
+  </div>
+
+  <!-- breakdown -->
+  <table class="btbl">
+    <tbody id="breakdown-tbody">
+      <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--color-text-tertiary);font-size:13px">매크로영양소 수치를 입력하면 계산 근거가 표시됩니다</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ── REFERENCE ─────────────────────────────────────────────────────── -->
+<div class="sec-title">FDA 칼로리 계수 참조표 (21 CFR 101.9(c)(1))</div>
+<div class="ref-grid">
+  <div class="ref-card">
+    <div class="ref-card-title">기본 Atwater 계수</div>
+    <div class="ref-row"><span class="ref-name">지방 (Fat)</span><span class="ref-val">9 kcal/g</span></div>
+    <div class="ref-row"><span class="ref-name">단백질 (Protein)</span><span class="ref-val">4 kcal/g</span></div>
+    <div class="ref-row"><span class="ref-name">탄수화물 (Carbohydrate)</span><span class="ref-val">4 kcal/g</span></div>
+    <div class="ref-row"><span class="ref-name">알코올 (Ethanol)</span><span class="ref-val">7 kcal/g</span></div>
+    <div class="ref-row"><span class="ref-name">수용성 섬유 (Soluble fiber)</span><span class="ref-val">2 kcal/g</span></div>
+    <div class="ref-row"><span class="ref-name">불용성 섬유 (Insoluble fiber)</span><span class="ref-val">0 kcal/g</span></div>
+  </div>
+  <div class="ref-card">
+    <div class="ref-card-title">당알콜별 kcal/g (21 CFR 101.9(c)(1)(i)(F))</div>
+    <div class="ref-row"><span class="ref-name">Erythritol 에리스리톨</span><span class="ref-val">0 kcal/g</span></div>
+    <div class="ref-row"><span class="ref-name">Mannitol 만니톨</span><span class="ref-val">1.6 kcal/g</span></div>
+    <div class="ref-row"><span class="ref-name">Isomalt 이소말트</span><span class="ref-val">2.0 kcal/g</span></div>
+    <div class="ref-row"><span class="ref-name">Lactitol 락티톨</span><span class="ref-val">2.0 kcal/g</span></div>
+    <div class="ref-row"><span class="ref-name">Xylitol 자일리톨</span><span class="ref-val">2.4 kcal/g</span></div>
+    <div class="ref-row"><span class="ref-name">Sorbitol 솔비톨</span><span class="ref-val">2.6 kcal/g</span></div>
+    <div class="ref-row"><span class="ref-name">Maltitol 말티톨</span><span class="ref-val">2.1 kcal/g</span></div>
+    <div class="ref-row"><span class="ref-name">HSH 수소화전분가수분해물</span><span class="ref-val">3.0 kcal/g</span></div>
+    <div class="ref-row"><span class="ref-name">미지정 Sugar Alcohols</span><span class="ref-val">4 kcal/g</span></div>
+  </div>
+</div>
+<div style="font-size:10px;color:var(--color-text-tertiary);margin-top:6px;line-height:1.6">
+  ※ FDA 허용 오차: 라벨 표기 칼로리는 계산값 대비 ±20% 이내 허용 (21 CFR 101.9(g)(3))<br>
+  ※ 식이섬유·당알콜 계수를 별도 지정하지 않을 경우 Total Carbohydrate × 4 kcal/g 로 일괄 계산 (기본 Atwater)
+</div>
+</div>
+
+<script>
+function g(id){const v=document.getElementById(id).value;return v===''?null:parseFloat(v);}
+
+function calc(){
+  const fat=g('v-fat'), prot=g('v-prot'), carb=g('v-carb');
+  const fiber=g('v-fiber'), sa=g('v-sa'), alc=g('v-alc');
+  const labelCal=g('v-label-cal');
+  const fiberFactor=parseFloat(document.getElementById('fiber-type').value);
+  const saFactor=parseFloat(document.getElementById('sa-type').value);
+  const saName=document.getElementById('sa-type').selectedOptions[0].text.split(' ')[0];
+  const fiberName=document.getElementById('fiber-type').selectedOptions[0].text.split(' (')[0];
+
+  const hasAny = fat!==null||prot!==null||carb!==null;
+  if(!hasAny){renderEmpty();return;}
+
+  const f=fat||0, p=prot||0, c=carb||0;
+  const fi=fiber||0, s=sa||0, al=alc||0;
+
+  // Calculation logic
+  // Base: fat*9 + protein*4
+  const fatKcal = f * 9;
+  const protKcal = p * 4;
+
+  // Carb breakdown:
+  // if fiber factor != 4: separate fiber from carb
+  // if sa factor != 4: separate sa from carb
+  // effective_carb = carb - (fiber if fiber not 4) - (sa if sa not 4)
+  const fiberSeparated = fiberFactor !== 4 && fi > 0;
+  const saSeparated = saFactor !== 4 && s > 0;
+
+  const carbForCalc = c - (fiberSeparated ? fi : 0) - (saSeparated ? s : 0);
+  const carbKcal = carbForCalc * 4;
+  const fiberKcal = fiberSeparated ? fi * fiberFactor : 0;
+  const saKcal = saSeparated ? s * saFactor : 0;
+  const alcKcal = al > 0 ? al * 7 : 0;
+
+  const totalCalc = Math.round(fatKcal + protKcal + carbKcal + fiberKcal + saKcal + alcKcal);
+
+  // Update compare
+  document.getElementById('calc-cal').textContent = totalCalc;
+  if(labelCal!==null){
+    document.getElementById('lbl-cal').textContent = labelCal;
+    const diff = Math.abs(labelCal - totalCalc);
+    const pctDiff = totalCalc > 0 ? (diff/totalCalc*100) : 0;
+    const badge = document.getElementById('diff-badge');
+    const sign = labelCal > totalCalc ? '+' : (labelCal < totalCalc ? '-' : '±');
+    const diffAbs = Math.abs(labelCal - totalCalc);
+    if(diff === 0){
+      badge.textContent = '±0 kcal — 완전 일치';
+      badge.className = 'diff-badge diff-ok';
+      document.getElementById('verdict').textContent = '✓ 일치';
+      document.getElementById('verdict').className = 'verdict v-ok';
+    } else if(pctDiff <= 20){
+      badge.textContent = `${sign}${diffAbs} kcal (${pctDiff.toFixed(1)}%) — FDA 허용범위`;
+      badge.className = 'diff-badge diff-warn';
+      document.getElementById('verdict').textContent = '△ 허용범위';
+      document.getElementById('verdict').className = 'verdict v-warn';
+    } else {
+      badge.textContent = `${sign}${diffAbs} kcal (${pctDiff.toFixed(1)}%) — 초과`;
+      badge.className = 'diff-badge diff-err';
+      document.getElementById('verdict').textContent = '✗ 오차 초과';
+      document.getElementById('verdict').className = 'verdict v-err';
+    }
+  } else {
+    document.getElementById('lbl-cal').textContent = '—';
+    document.getElementById('diff-badge').textContent = '라벨 칼로리 미입력';
+    document.getElementById('diff-badge').className = 'diff-badge diff-na';
+    document.getElementById('verdict').textContent = '계산값: '+totalCalc+' kcal';
+    document.getElementById('verdict').className = 'verdict v-na';
+  }
+
+  // Build breakdown
+  const tb = document.getElementById('breakdown-tbody');
+  let html = '';
+
+  html += `<tr class="divider"><td colspan="5">성분별 칼로리 계산</td></tr>`;
+
+  // Fat
+  html += row('지방 (Total Fat)', `${f}g`, '×', '9 kcal/g', r(fatKcal), 'nc-blue', '21 CFR 101.9(c)(1)(i)(A)', fat===null);
+
+  // Protein
+  html += row('단백질 (Protein)', `${p}g`, '×', '4 kcal/g', r(protKcal), 'nc-blue', '21 CFR 101.9(c)(1)(i)(B)', prot===null);
+
+  // Carb section
+  if(!fiberSeparated && !saSeparated){
+    // simple: total carb * 4
+    html += row('탄수화물 Total Carbohydrate', `${c}g`, '×', '4 kcal/g', r(carbKcal), 'nc-blue', '기본 Atwater · 섬유·당알콜 포함', carb===null);
+  } else {
+    // detailed carb
+    const remaining = c - (fiberSeparated?fi:0) - (saSeparated?s:0);
+    html += `<tr class="divider"><td colspan="5">탄수화물 세부 계산</td></tr>`;
+    html += row(`Total Carbohydrate ${c}g`, '', '', '', '', 'nc-amber', '세부 분리 계산', false, true);
+    if(fiberSeparated){
+      html += row(`  └ 식이섬유 제외 (${fi}g)`, '', '', '', '', '', '', false, true);
+    }
+    if(saSeparated){
+      html += row(`  └ 당알콜 제외 (${s}g)`, '', '', '', '', '', '', false, true);
+    }
+    html += row(`순 탄수화물 (${remaining}g)`, `${Math.max(0,remaining)}g`, '×', '4 kcal/g', r(Math.max(0,remaining)*4), 'nc-blue', '섬유·당알콜 제외 후', false);
+
+    if(fiberSeparated){
+      html += row(
+        `식이섬유 — ${fiberName}`,
+        `${fi}g`, '×', `${fiberFactor} kcal/g`,
+        r(fiberKcal), 'nc-green',
+        fiberFactor===0?'불용성 섬유 — 에너지 기여 없음':`수용성 섬유 FDA 인정 계수 (21 CFR 101.9(c)(1))`,
+        false
+      );
+    }
+    if(saSeparated){
+      html += row(
+        `당알콜 — ${saName}`,
+        `${s}g`, '×', `${saFactor} kcal/g`,
+        r(saKcal), 'nc-green',
+        `21 CFR 101.9(c)(1)(i)(F) — ${saName} FDA 공인 계수`,
+        false
+      );
+    }
+  }
+
+  // Alcohol
+  if(al > 0){
+    html += row('알코올 (Ethanol)', `${al}g`, '×', '7 kcal/g', r(alcKcal), 'nc-amber', '21 CFR 101.9(c)(1)(i)(E)', false);
+  }
+
+  // Total
+  html += `<tr class="total-row"><td class="item-name" style="padding:10px 16px;font-size:14px">합계 (계산 Calories)</td><td></td><td class="eq-col">=</td><td></td><td class="kcal-col" style="font-size:16px;color:#2563EB">${totalCalc} kcal</td></tr>`;
+
+  // FDA tolerance note
+  if(labelCal!==null){
+    const diff=Math.abs(labelCal-totalCalc);
+    const pct=totalCalc>0?(diff/totalCalc*100):0;
+    const color=pct<=20?'#15803D':'#B91C1C';
+    html+=`<tr><td colspan="5" style="padding:8px 16px;font-size:11px;color:${color};background:var(--color-background-secondary)">
+      FDA 21 CFR 101.9(g)(3): 라벨 표기 칼로리는 실측값 대비 ±20% 이내 허용 · 현재 차이: ${pct.toFixed(1)}% ${pct<=20?'✓ 허용범위 이내':'✗ 허용범위 초과'}
+    </td></tr>`;
+  }
+
+  tb.innerHTML = html;
+}
+
+function r(v){return Math.round(v*10)/10;}
+
+function row(name, val, eq, factor, kcal, chipClass, chipText, disabled, noKcal){
+  const dc = disabled?'disabled-row':'';
+  const chip = chipClass?`<span class="note-chip ${chipClass}">${chipText}</span>`:(chipText?`<span style="font-size:10px;color:var(--color-text-tertiary)">${chipText}</span>`:'');
+  const kcalCell = noKcal?'':`<td class="kcal-col">${kcal!==''&&!disabled?kcal+' kcal':''}</td>`;
+  return `<tr class="${dc}">
+    <td class="item-name">${name}${chip}</td>
+    <td class="val-col">${val}</td>
+    <td class="eq-col">${eq}</td>
+    <td class="factor-col">${factor}</td>
+    ${noKcal?'<td></td>':kcalCell}
+  </tr>`;
+}
+
+function renderEmpty(){
+  document.getElementById('breakdown-tbody').innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--color-text-tertiary);font-size:13px">매크로영양소 수치를 입력하면 계산 근거가 표시됩니다</td></tr>';
+  document.getElementById('lbl-cal').textContent='—';
+  document.getElementById('calc-cal').textContent='—';
+  document.getElementById('diff-badge').textContent='—';
+  document.getElementById('diff-badge').className='diff-badge diff-na';
+  document.getElementById('verdict').textContent='수치 입력 대기';
+  document.getElementById('verdict').className='verdict v-na';
+}
+</script>

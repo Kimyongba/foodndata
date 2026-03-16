@@ -1,11 +1,143 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>FoodNData.com 준비 중입니다</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FoodNData — 미국 수출 식품 라벨 검증 도구</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; background: #fff; color: #1a1a1a; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Header */
+    .site-header { background: #1E3A5F; padding: 56px 24px 48px; text-align: center; }
+    .site-header h1 { font-size: 38px; font-weight: 700; color: #fff; letter-spacing: -0.5px; margin-bottom: 10px; }
+    .site-header .tagline { font-size: 16px; color: rgba(255,255,255,0.72); }
+
+    /* Main */
+    main { max-width: 1000px; margin: 0 auto; padding: 52px 24px 60px; flex: 1; }
+
+    /* Section label */
+    .section-label { font-size: 12px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 22px; }
+
+    /* Cards */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 22px; }
+    .card {
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 30px 26px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: box-shadow .18s, border-color .18s, transform .18s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .card:hover {
+      box-shadow: 0 6px 24px rgba(30,58,95,.12);
+      border-color: #1E3A5F;
+      transform: translateY(-2px);
+    }
+    .card-icon {
+      width: 44px; height: 44px;
+      background: #EEF2F9;
+      border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 4px;
+    }
+    .card-icon svg { width: 22px; height: 22px; }
+    .card-badge {
+      font-size: 11px; font-weight: 600; color: #1E3A5F;
+      background: #EEF2F9; border-radius: 99px;
+      padding: 3px 10px; align-self: flex-start;
+    }
+    .card-title { font-size: 17px; font-weight: 700; color: #111; line-height: 1.3; }
+    .card-desc { font-size: 13.5px; color: #555; line-height: 1.65; flex: 1; }
+    .card-btn {
+      margin-top: 8px;
+      display: inline-block;
+      background: #1E3A5F; color: #fff;
+      text-decoration: none; font-size: 13px; font-weight: 600;
+      padding: 9px 18px; border-radius: 8px;
+      transition: background .15s;
+      align-self: flex-start;
+    }
+    .card-btn:hover { background: #2a5080; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid #f0f0f0;
+      padding: 22px 24px;
+      text-align: center;
+      font-size: 12px; color: #aaa;
+    }
+
+    @media (max-width: 640px) {
+      .site-header { padding: 40px 20px 36px; }
+      .site-header h1 { font-size: 28px; }
+      .site-header .tagline { font-size: 14px; }
+      main { padding: 36px 16px 48px; }
+      .cards { gap: 16px; }
+    }
+  </style>
 </head>
 <body>
-    <h1>FoodNData.com</h1>
-    <p>식품 영양 성분 및 법령 정보 사이트가 곧 오픈합니다. 기대해 주세요!</p>
+
+<header class="site-header">
+  <h1>FoodNData</h1>
+  <p class="tagline">미국 수출 식품 라벨 검증 도구</p>
+</header>
+
+<main>
+  <p class="section-label">검증 도구 모음</p>
+  <div class="cards">
+
+    <div class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1E3A5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+        </svg>
+      </div>
+      <span class="card-badge">25개 항목</span>
+      <h2 class="card-title">라벨 Misbranding 체크리스트</h2>
+      <p class="card-desc">FDA Import Alert 99-39 기반 25개 항목 점검. 실제 detention 사례와 위반 빈도 기반으로 구성된 실전 체크리스트.</p>
+      <a class="card-btn" href="checklist.html">바로가기 →</a>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1E3A5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="2" width="14" height="20" rx="2"/>
+          <line x1="9" y1="7" x2="15" y2="7"/>
+          <line x1="9" y1="11" x2="15" y2="11"/>
+          <line x1="9" y1="15" x2="12" y2="15"/>
+        </svg>
+      </div>
+      <span class="card-badge">NF · SF 구분</span>
+      <h2 class="card-title">Nutrition Facts 검증기</h2>
+      <p class="card-desc">반올림·%DV 자동 계산. 21 CFR 101.9 기반 일반식품 / Dietary Supplement 구분 검증.</p>
+      <a class="card-btn" href="nf-checker.html">바로가기 →</a>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1E3A5F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3h18v18H3z" rx="2"/>
+          <path d="M3 9h18M9 21V9"/>
+        </svg>
+      </div>
+      <span class="card-badge">FDA 계수 반영</span>
+      <h2 class="card-title">칼로리 계산 근거 검증기</h2>
+      <p class="card-desc">식이섬유·당알콜별 FDA 계수 반영. 라벨 칼로리와 계산값 비교 및 ±20% 허용 오차 자동 판정.</p>
+      <a class="card-btn" href="calorie-calc.html">바로가기 →</a>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  FoodNData · FDA 미국 수출 라벨 검증 · 21 CFR 기반
+</footer>
+
 </body>
 </html>
