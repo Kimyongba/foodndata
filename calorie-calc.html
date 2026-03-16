@@ -1,3 +1,4 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 .fnav{display:flex;align-items:center;justify-content:space-between;background:#1E3A5F;padding:10px 20px;font-family:system-ui,-apple-system,sans-serif;position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:8px}
 .fnav a{color:#fff;text-decoration:none}
@@ -92,26 +93,30 @@ h2{font-size:17px;font-weight:500;color:var(--color-text-primary);margin-bottom:
 .ref-note{font-size:10px;color:var(--color-text-tertiary)}
 .sec-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin:.75rem 0 6px}
 @media(max-width:640px){
-  h2{font-size:16px}
+  h2{font-size:18px}
   .sub{font-size:14px}
-  .input-card-title{font-size:12px}
+  .input-grid{grid-template-columns:1fr}
+  .input-card-title{font-size:13px}
   .input-label{font-size:15px}
-  .ni{font-size:15px;width:80px}
-  .unit-lbl{font-size:12px}
-  .factor-lbl{font-size:12px}
-  .sa-select{font-size:13px}
-  .result-title{font-size:14px}
-  .verdict{font-size:14px}
+  .ni{font-size:15px;width:84px;padding:6px 8px}
+  .unit-lbl{font-size:13px}
+  .factor-lbl{font-size:13px}
+  .sa-select{font-size:14px;max-width:100%}
+  .result-title{font-size:15px}
+  .verdict{font-size:14px;padding:5px 14px}
   .compare-label{font-size:13px}
-  .compare-val{font-size:20px}
-  .diff-badge{font-size:14px}
-  .btbl{font-size:14px}
+  .compare-val{font-size:22px}
+  .diff-badge{font-size:13px}
+  .result-panel{overflow-x:auto}
+  .btbl{font-size:14px;min-width:480px}
+  .btbl td{padding:8px 12px}
   .btbl .val-col,.btbl .factor-col,.btbl .eq-col{font-size:13px}
   .btbl .kcal-col{font-size:14px}
   .btbl tr.total-row .kcal-col{font-size:16px}
   .btbl .note-chip{font-size:11px}
-  .ref-row{font-size:13px}
-  .sec-title{font-size:12px}
+  .ref-grid{grid-template-columns:1fr}
+  .ref-row{font-size:14px}
+  .sec-title{font-size:13px}
 }
 </style>
 
